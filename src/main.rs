@@ -1,5 +1,7 @@
 use crate::cli::command::{Cli, Commands};
-use crate::display::scriptlets::{show_all_scriptlets, show_all_scriptlets_for_tool};
+use crate::display::scriptlets::{
+    show_all_scriptlets, show_all_scriptlets_for_tool, show_searched_scriptlets,
+};
 use crate::parse::parser::parse_scriptlet;
 use clap::Parser;
 
@@ -24,5 +26,8 @@ fn main() {
             None => show_all_scriptlets(),
             Some(tool_name) => show_all_scriptlets_for_tool(&tool_name),
         },
+        Commands::Search { search } => {
+            show_searched_scriptlets(search);
+        }
     }
 }

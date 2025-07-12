@@ -1,4 +1,5 @@
-use crate::database::database::{get_all_scriptlets, get_scriptlets_for_tool};
+use crate::database::data_types::ScriptletData;
+use crate::database::database::{get_all_scriptlets, get_scriptlets_for_tool, search_scriptlets};
 use crate::tui::print::show_all_scriptlets_tui;
 
 pub fn show_all_scriptlets() {
@@ -12,5 +13,10 @@ pub fn show_all_scriptlets_for_tool(tool_name: &str) {
         println!("No scriptlets found for {}", tool_name);
         return;
     }
+    show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
+}
+
+pub fn show_searched_scriptlets(search: Vec<String>) {
+    let scriplets = search_scriptlets(&search.join(" ")).expect("can't get scriptlets");
     show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
 }

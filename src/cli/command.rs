@@ -30,4 +30,10 @@ pub enum Commands {
         /// If omitted, lists all tools; otherwise shows only this tool's scriptlets
         tool: Option<String>,
     },
+
+    /// Search existing documentation
+    Search {
+        /// Searches through the documentation for matching tools
+        search: Vec<String>,
+    },
 }

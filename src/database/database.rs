@@ -1,4 +1,5 @@
 use crate::database::data_types::ScriptletData;
+use crate::database::scriptlet::{convert_to_scriptlet_data, match_scriptlets};
 use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::Access;
@@ -34,6 +35,29 @@ static CONNECTION: Lazy<Mutex<Connection>> = Lazy::new(|| {
             FOREIGN KEY(tool_id)      REFERENCES tool(id),
             FOREIGN KEY(scriptlet_id) REFERENCES scriptlet(id)
         );
+        CREATE VIRTUAL TABLE IF NOT EXISTS scriptlet_fts
+        USING fts5(
+            name,
+            description,
+            command,
+            tokenize='porter',
+            content='scriptlet',
+            content_rowid='id'
+        );
+        CREATE TRIGGER IF NOT EXISTS scriptlet_ai AFTER INSERT ON scriptlet BEGIN
+          INSERT INTO scriptlet_fts(rowid, name, description, command)
+            VALUES (new.id, new.name, new.description, new.command);
+        END;
+        CREATE TRIGGER IF NOT EXISTS scriptlet_ad AFTER DELETE ON scriptlet BEGIN
+          INSERT INTO scriptlet_fts(scriptlet_fts, rowid, name, description, command)
+            VALUES('delete', old.id, old.name, old.description, old.command);
+        END;
+        CREATE TRIGGER IF NOT EXISTS scriptlet_au AFTER UPDATE ON scriptlet BEGIN
+          INSERT INTO scriptlet_fts(scriptlet_fts, rowid, name, description, command)
+            VALUES('delete', old.id, old.name, old.description, old.command);
+          INSERT INTO scriptlet_fts(rowid, name, description, command)
+            VALUES (new.id, new.name, new.description, new.command);
+        END;
         COMMIT;
         ",
     )
@@ -76,4 +100,8 @@ pub fn get_scriptlets_for_tool(tool_name: &str) -> Result<Vec<ScriptletData>, Do
     let tool_id =
         tool::get_tool(tool_name, &conn).expect("There are no scriptlets that use this tool");
     tool_to_scriptlet::get_from_tool_id(tool_id, &conn)
+}
+pub fn search_scriptlets(query: &str) -> Result<Vec<ScriptletData>, DocuError> {
+    let conn = get_conn()?;
+    match_scriptlets(query, &conn)
 }
