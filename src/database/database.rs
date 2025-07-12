@@ -1,4 +1,4 @@
-use crate::database::data_types::{ScriptletData, ToolData};
+use crate::database::data_types::ScriptletData;
 use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::Access;
@@ -68,19 +68,9 @@ pub fn get_all_scriptlets() -> Result<Vec<ScriptletData>, DocuError> {
     scriptlet::get_scriptlets(&conn)
 }
 
-pub fn get_all_tools() -> Result<Vec<ToolData>, DocuError> {
-    let conn = get_conn()?;
-    tool::get_tools(&conn)
-}
-
 pub fn get_scriptlets_for_tool(tool_name: &str) -> Result<Vec<ScriptletData>, DocuError> {
     let conn = get_conn()?;
     let tool_id =
         tool::get_tool(tool_name, &conn).expect("There are no scriptlets that use this tool");
     tool_to_scriptlet::get_from_tool_id(tool_id, &conn)
-}
-
-pub fn get_tools_for_scriptlet(scriptlet_id: i64) -> Result<Vec<ToolData>, DocuError> {
-    let conn = get_conn()?;
-    tool_to_scriptlet::get_from_scriptlet_id(scriptlet_id, &conn)
 }

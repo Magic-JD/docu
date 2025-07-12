@@ -8,6 +8,7 @@ mod database;
 mod display;
 mod errors;
 mod parse;
+mod tui;
 
 fn main() {
     let cli = Cli::parse();

@@ -20,9 +20,9 @@ pub enum Commands {
         /// The full invocation of your tool + scriptlet
         ///
         /// Example:
-        /// docu add sed -i '1{s/ /_/g}' products.csv
+        /// docu add "sed -i '1{s/ /_/g}'" products.csv
         #[arg(required = true)]
-        args: Vec<String>,
+        args: String,
     },
 
     /// Show existing documentation

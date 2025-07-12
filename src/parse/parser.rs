@@ -6,8 +6,14 @@ use std::io::Write;
 
 const FILE_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r".*\.[A-Za-z0-9]+$").expect("Regex could not be compiled."));
+const ARG_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#""[^"]*"|'[^']*'|\S+"#).expect("Regex could not be compiled."));
 
-pub fn parse_scriptlet(scriptlet: Vec<String>) {
+pub fn parse_scriptlet(scriptlet: String) {
+    let scriptlet = ARG_REGEX
+        .find_iter(&scriptlet)
+        .map(|m| m.as_str().to_string())
+        .collect();
     let scriptlet = replace_variables(scriptlet);
     let name = get_scriptlet_name(&scriptlet);
     let tool = scriptlet

@@ -1,6 +1,5 @@
-use crate::database::data_types::{ScriptletData, ToolData};
+use crate::database::data_types::ScriptletData;
 use crate::database::scriptlet::convert_to_scriptlet_data;
-use crate::database::tool::convert_to_tool_data;
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::DatabaseSql;
 use rusqlite::Connection;
@@ -44,29 +43,6 @@ pub fn get_from_tool_id(
 
     let rows = stmt
         .query_map(params![tool_id], |row: &Row| convert_to_scriptlet_data(row))
-        .map_err(DatabaseSql)?
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(DatabaseSql)?;
-
-    Ok(rows)
-}
-
-pub fn get_from_scriptlet_id(
-    scriptlet_id: i64,
-    conn: &MutexGuard<Connection>,
-) -> Result<Vec<ToolData>, DocuError> {
-    let mut stmt = conn
-        .prepare(
-            "SELECT t.id, t.name, t.time
-             FROM tool t
-             JOIN tool_scriptlet ts ON t.id = ts.tool_id
-             WHERE ts.scriptlet_id = ?1
-             ORDER BY t.time DESC",
-        )
-        .map_err(DatabaseSql)?;
-
-    let rows = stmt
-        .query_map(params![scriptlet_id], |row: &Row| convert_to_tool_data(row))
         .map_err(DatabaseSql)?
         .collect::<Result<Vec<_>, _>>()
         .map_err(DatabaseSql)?;

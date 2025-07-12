@@ -1,16 +1,9 @@
-use crate::database::data_types::ScriptletData;
 use crate::database::database::{get_all_scriptlets, get_scriptlets_for_tool};
+use crate::tui::print::show_all_scriptlets_tui;
 
 pub fn show_all_scriptlets() {
     let scriplets = get_all_scriptlets().expect("can't get scriptlets");
-    scriplets.into_iter().for_each(display_scriptlet)
-}
-
-fn display_scriptlet(scriptlet: ScriptletData) {
-    println!("Name: {}", scriptlet.name);
-    println!("Description: {}", scriptlet.description);
-    println!("{}", scriptlet.command);
-    println!();
+    show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
 }
 
 pub fn show_all_scriptlets_for_tool(tool_name: &str) {
@@ -19,5 +12,5 @@ pub fn show_all_scriptlets_for_tool(tool_name: &str) {
         println!("No scriptlets found for {}", tool_name);
         return;
     }
-    scriplets.into_iter().for_each(display_scriptlet)
+    show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
 }
