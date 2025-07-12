@@ -7,4 +7,7 @@ pub enum DocuError {
 
     #[error("Access errors: {0}")]
     Access(String),
+
+    #[error("I/O errors: {0}")]
+    Io(#[from] std::io::Error),
 }
