@@ -5,6 +5,7 @@ use crate::errors::error::DocuError::Access;
 use dirs::data_dir;
 use once_cell::sync::Lazy;
 use rusqlite::Connection;
+use std::fs::create_dir_all;
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
@@ -42,6 +43,8 @@ static CONNECTION: Lazy<Mutex<Connection>> = Lazy::new(|| {
 
 fn database_path() -> PathBuf {
     let mut path = data_dir().expect("Failed to obtain data directory");
+    path.push("docu");
+    create_dir_all(&path).expect("Failed to create data directory");
     path.push("docu.db");
     path
 }
