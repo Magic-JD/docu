@@ -4,10 +4,10 @@ use rusqlite::Connection;
 use std::sync::MutexGuard;
 
 pub fn add_or_get_tool(name: &str, conn: &MutexGuard<Connection>) -> Result<i64, DocuError> {
-    if let Ok(existing_id) = get_tool(name, &conn) {
+    if let Ok(existing_id) = get_tool(name, conn) {
         return Ok(existing_id);
     }
-    insert_row(name, &conn)
+    insert_row(name, conn)
 }
 
 pub(crate) fn get_tool(name: &str, conn: &MutexGuard<Connection>) -> Result<i64, DocuError> {

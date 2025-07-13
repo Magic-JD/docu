@@ -1,4 +1,4 @@
-use crate::database::database::add_scriptlet;
+use crate::database::connect::add_scriptlet;
 use once_cell::unsync::Lazy;
 use regex::Regex;
 use std::io;
@@ -17,7 +17,7 @@ pub fn parse_scriptlet(scriptlet: String) {
     let scriptlet = replace_variables(scriptlet);
     let name = get_scriptlet_name(&scriptlet);
     let tool = scriptlet
-        .get(0)
+        .first()
         .expect("Tool could not be parsed.")
         .to_string();
     let command = scriptlet.join(" ");

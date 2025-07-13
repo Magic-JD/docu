@@ -11,7 +11,7 @@ pub fn link_scriptlet_to_tool(
     scriptlet_id: i64,
     conn: &MutexGuard<Connection>,
 ) -> Result<(), DocuError> {
-    insert_tool_scriptlet(tool_id, scriptlet_id, &conn)
+    insert_tool_scriptlet(tool_id, scriptlet_id, conn)
 }
 
 fn insert_tool_scriptlet(

@@ -1,5 +1,4 @@
-use crate::database::data_types::ScriptletData;
-use crate::database::database::{get_all_scriptlets, get_scriptlets_for_tool, search_scriptlets};
+use crate::database::connect::{get_all_scriptlets, get_scriptlets_for_tool, search_scriptlets};
 use crate::tui::print::show_all_scriptlets_tui;
 
 pub fn show_all_scriptlets() {

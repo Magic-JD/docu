@@ -61,7 +61,7 @@
     <Product
         Id='*'
         Name='docu'
-        UpgradeCode='7FF9AB65-49EF-4CC5-B943-2D215657D47B'
+        UpgradeCode='48661F99-A78D-4994-B8B7-E846F4E0801F'
         Manufacturer='Joseph Daunt'
         Language='1033'
         Codepage='1252'
@@ -110,7 +110,7 @@
                     -->
 
                     <Directory Id='Bin' Name='bin'>
-                        <Component Id='Path' Guid='D5719B5E-B2BD-48A4-BB17-383B29B32782' KeyPath='yes'>
+                        <Component Id='Path' Guid='F41C5C97-4825-4DEF-8B64-0B44FBE9EEAB' KeyPath='yes'>
                             <Environment
                                 Id='PATH'
                                 Name='PATH'

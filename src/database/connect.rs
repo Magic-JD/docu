@@ -1,5 +1,5 @@
 use crate::database::data_types::ScriptletData;
-use crate::database::scriptlet::{convert_to_scriptlet_data, match_scriptlets};
+use crate::database::scriptlet::match_scriptlets;
 use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::Access;

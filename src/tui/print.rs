@@ -40,7 +40,7 @@ pub fn show_all_scriptlets_tui(scriptlets: Vec<ScriptletData>) -> Result<(), Doc
     Ok(())
 }
 
-fn clear_to_start(items: &Vec<ListItem>) -> Result<(u16, u16), DocuError> {
+fn clear_to_start(items: &[ListItem]) -> Result<(u16, u16), DocuError> {
     let tui_height = items.len() as u16 + 2;
     let (_, mut start_row) = position()?;
     let (_, rows) = size()?;
@@ -48,7 +48,7 @@ fn clear_to_start(items: &Vec<ListItem>) -> Result<(u16, u16), DocuError> {
     if tui_height > avail {
         let to_scroll = tui_height - avail;
         execute!(io::stdout(), ScrollUp(to_scroll))?;
-        start_row = start_row - to_scroll;
+        start_row -= to_scroll;
     }
     Ok((tui_height, start_row))
 }
