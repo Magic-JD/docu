@@ -1,2 +1,69 @@
-# docu
-Docu is a cli tool that allows easy documentation of any mini scripts (scriptlets) that you write. These scriptlets might be useful, but not significant enough to make as an alias or a true script. This tool will let you save and search your scriptlets in neat markdown documentation.
+# Docu
+Docu is a CLI tool for easy documentation of mini scripts (scriptlets) you write. These scriptlets might be useful, but not significant enough to become an alias or standalone script. Docu lets you save, categorize, and search your scriptlets in neat Markdown documentation.
+
+## Features
+- Store one-off scriptlets with a name and description
+- List stored scriptlets with filters by tool or keyword
+- Search by description to find matching scriptlets quickly
+- Output stored commands with placeholders for context variables
+
+## Installation
+
+
+## Usage
+### Add a scriptlet
+```bash
+docu add [OPTIONS] "SCRIPT"
+```
+- SCRIPT: The raw command or pipeline to store.
+- You will be prompted to enter:
+- Name: A short identifier (e.g. camel case header)
+- Description: A sentence summarizing the purpose.
+
+### Show all scriptlets
+```bash
+docu show
+```
+Lists every stored scriptlet with its name and description.
+
+### Filter by command
+```bash
+docu show $TOOL_NAME
+```
+Displays only scriptlets containing the sed command.
+
+### Search by description
+```bash
+docu search $SEARCH_TERM
+```
+Returns an ordered list of scriptlets matching the search terms in their descriptions.
+
+## Examples
+1. Store a CSV header camel-casing command
+```bash
+docu add "sed -i '1{s/ /_/g}' products.csv"
+```
+
+When prompted:
+- Name: camel case header
+- Description: Convert spaces in CSV header to underscores
+
+2. Show it in all sed scriptlets
+```bash
+docu show sed
+```
+
+3. Find by keyword
+```bash
+docu search "camel case"
+```
+
+## Contributing
+1. Fork the repository.
+2. Create a feature branch: git checkout -b feature-name.
+3. Commit your changes: git commit -m "Add feature".
+4. Push to your branch: git push origin feature-name.
+5. Open a pull request.
+
+## License
+MIT License. See LICENSE for details.
