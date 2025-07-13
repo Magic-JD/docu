@@ -20,7 +20,7 @@ pub(crate) fn insert_row(
 
 pub fn get_scriptlets(conn: &MutexGuard<Connection>) -> Result<Vec<ScriptletData>, DocuError> {
     let mut stmt =
-        conn.prepare("SELECT name, command, description FROM scriptlet ORDER BY time DESC")?;
+        conn.prepare("SELECT id, name, command, description FROM scriptlet ORDER BY time DESC")?;
     let scriptlets: Vec<ScriptletData> = stmt
         .query_map([], convert_to_scriptlet_data)?
         .collect::<Result<_, _>>()
@@ -39,7 +39,7 @@ pub fn match_scriptlets(
         .collect::<Vec<_>>()
         .join(" OR ");
     let sql = "
-        SELECT s.name, s.command, s.description
+        SELECT s.id, s.name, s.command, s.description
         FROM   scriptlet_fts
         JOIN   scriptlet     AS s ON s.id = scriptlet_fts.rowid
         WHERE  scriptlet_fts MATCH ?1
@@ -53,10 +53,25 @@ pub fn match_scriptlets(
     Ok(rows)
 }
 
+pub(crate) fn remove_scriptlet(id: i64, conn: &MutexGuard<Connection>) -> Result<(), DocuError> {
+    // delete the main record
+    conn.execute("DELETE FROM scriptlet WHERE id = ?1", [id])?;
+    // if you maintain a separate FTS table without DELETE triggers,
+    // uncomment the next lines to keep it in sync:
+    //
+    // conn.execute(
+    //     "DELETE FROM scriptlet_fts WHERE rowid = ?1",
+    //     [id],
+    // )?;
+    //
+    Ok(())
+}
+
 pub(crate) fn convert_to_scriptlet_data(row: &Row) -> Result<ScriptletData, Error> {
     Ok(ScriptletData {
-        name: row.get(0)?,
-        command: row.get(1)?,
-        description: row.get(2)?,
+        id: row.get(0)?,
+        name: row.get(1)?,
+        command: row.get(2)?,
+        description: row.get(3)?,
     })
 }

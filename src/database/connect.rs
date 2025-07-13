@@ -1,5 +1,5 @@
 use crate::database::data_types::ScriptletData;
-use crate::database::scriptlet::match_scriptlets;
+use crate::database::scriptlet::{match_scriptlets, remove_scriptlet};
 use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::{Access, DatabaseSql};
@@ -31,8 +31,8 @@ static CONNECTION: LazyLock<Mutex<Connection>> = LazyLock::new(|| {
             tool_id       INTEGER NOT NULL,
             scriptlet_id  INTEGER NOT NULL,
             UNIQUE(tool_id, scriptlet_id),
-            FOREIGN KEY(tool_id)      REFERENCES tool(id),
-            FOREIGN KEY(scriptlet_id) REFERENCES scriptlet(id)
+            FOREIGN KEY(tool_id)      REFERENCES tool(id) ON DELETE CASCADE,
+            FOREIGN KEY(scriptlet_id) REFERENCES scriptlet(id) ON DELETE CASCADE
         );
         CREATE VIRTUAL TABLE IF NOT EXISTS scriptlet_fts
         USING fts5(
@@ -108,4 +108,12 @@ pub fn get_scriptlets_for_tool(tool_name: &str) -> Result<Vec<ScriptletData>, Do
 pub fn search_scriptlets(query: &str) -> Result<Vec<ScriptletData>, DocuError> {
     let conn = get_conn()?;
     match_scriptlets(query, &conn)
+}
+
+pub fn remove_scriptlets(ids: Vec<i64>) -> Result<(), DocuError> {
+    let conn = get_conn()?;
+    for id in ids {
+        remove_scriptlet(id, &conn)?;
+    }
+    Ok(())
 }

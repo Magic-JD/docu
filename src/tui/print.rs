@@ -59,7 +59,7 @@ fn convert_to_list_items(scriptlets: Vec<ScriptletData>) -> Vec<ListItem<'static
         .flat_map(|s| {
             vec![
                 ListItem::new(Span::styled(
-                    s.name,
+                    format!("{} ({})", s.name, s.id),
                     Style::default()
                         .fg(Color::Yellow)
                         .add_modifier(Modifier::BOLD),

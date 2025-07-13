@@ -36,4 +36,10 @@ pub enum Commands {
         /// Searches through the documentation for matching tools
         search: Vec<String>,
     },
+
+    // Remove a scriptlet by id
+    Remove {
+        // Removes the given ids
+        ids: Vec<i64>,
+    },
 }

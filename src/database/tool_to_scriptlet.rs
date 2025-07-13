@@ -33,7 +33,7 @@ pub fn get_from_tool_id(
 ) -> Result<Vec<ScriptletData>, DocuError> {
     let mut stmt = conn
         .prepare(
-            "SELECT s.name, s.command, s.description
+            "SELECT s.id, s.name, s.command, s.description
              FROM scriptlet s
              JOIN tool_scriptlet ts ON s.id = ts.scriptlet_id
              WHERE ts.tool_id = ?1
