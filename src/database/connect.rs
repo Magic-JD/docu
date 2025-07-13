@@ -2,9 +2,9 @@ use crate::database::data_types::ScriptletData;
 use crate::database::scriptlet::match_scriptlets;
 use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
-use crate::errors::error::DocuError::Access;
+use crate::errors::error::DocuError::{Access, DatabaseSql};
 use dirs::data_dir;
-use rusqlite::Connection;
+use rusqlite::{Connection, Error};
 use std::fs::create_dir_all;
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex, MutexGuard};
@@ -98,9 +98,12 @@ pub fn get_all_scriptlets() -> Result<Vec<ScriptletData>, DocuError> {
 
 pub fn get_scriptlets_for_tool(tool_name: &str) -> Result<Vec<ScriptletData>, DocuError> {
     let conn = get_conn()?;
-    let tool_id =
-        tool::get_tool(tool_name, &conn).expect("There are no scriptlets that use this tool");
-    tool_to_scriptlet::get_from_tool_id(tool_id, &conn)
+    let result = tool::get_tool_id(tool_name, &conn);
+    match result {
+        Ok(tool_idx) => tool_to_scriptlet::get_from_tool_id(tool_idx, &conn),
+        Err(DatabaseSql(Error::QueryReturnedNoRows)) => Ok(Vec::new()),
+        Err(err) => Err(err),
+    }
 }
 pub fn search_scriptlets(query: &str) -> Result<Vec<ScriptletData>, DocuError> {
     let conn = get_conn()?;
