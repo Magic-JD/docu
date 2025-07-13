@@ -7,8 +7,26 @@ Docu is a CLI tool for easy documentation of mini scripts (scriptlets) you write
 - Search by description to find matching scriptlets quickly
 - Output stored commands with placeholders for context variables
 
-## Installation
+## Installing the program ![Latest Release](https://img.shields.io/github/v/release/Magic-JD/docu?include_prereleases)
 
+
+### Install prebuilt binaries via shell script
+
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Magic-JD/docu/releases/latest/download/docu-installer.sh | sh
+```
+
+### Install prebuilt binaries via Homebrew
+
+```sh
+brew install magic-jd/tap/docu
+```
+
+### Install latest from source with cargo:
+
+```sh
+cargo install --git https://github.com/Magic-JD/docu.git
+```
 
 ## Usage
 ### Add a scriptlet
