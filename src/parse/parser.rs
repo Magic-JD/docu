@@ -2,27 +2,19 @@ use crate::database::connect::add_scriptlet;
 use dialoguer::Input;
 use dialoguer::console::Style;
 use dialoguer::theme::ColorfulTheme;
-use once_cell::unsync::Lazy;
 use regex::Regex;
 
-const FILE_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r".*\.[A-Za-z0-9]+$").expect("Regex could not be compiled."));
-const ARG_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r#""[^"]*"|'[^']*'|\S+"#).expect("Regex could not be compiled."));
-
-pub fn parse_scriptlet(scriptlet_string: String) {
-    let scriptlet = ARG_REGEX
-        .find_iter(&scriptlet_string)
+pub fn parse_scriptlet(scriptlet_string: &str) {
+    let scriptlet = arg_regex()
+        .find_iter(scriptlet_string)
         .map(|m| m.as_str().to_string())
         .collect();
     let scriptlet = replace_variables(scriptlet);
     let name = get_input("Enter the name for your scriptlet");
     let tools = scriptlet_string
         .split('|')
-        .map(|s| s.trim())
-        .map(|s| s.split(' ').next())
-        .filter(|o| o.is_some())
-        .map(|o| o.unwrap())
+        .map(str::trim)
+        .filter_map(|s| s.split(' ').next())
         .collect::<Vec<&str>>();
     let command = scriptlet.join(" ");
     let description = get_input("Enter the description for your scriptlet");
@@ -50,9 +42,17 @@ fn replace_variables(scriptlet: Vec<String>) -> Vec<String> {
 }
 
 fn replace_file(arg: String) -> String {
-    if FILE_REGEX.is_match(&arg) {
+    if file_regex().is_match(&arg) {
         "$FILE".into()
     } else {
         arg
     }
+}
+
+fn file_regex() -> Regex {
+    Regex::new(r".*\.[A-Za-z0-9]+$").expect("Regex could not be compiled.")
+}
+
+fn arg_regex() -> Regex {
+    Regex::new(r#""[^"]*"|'[^']*'|\S+"#).expect("Regex could not be compiled.")
 }

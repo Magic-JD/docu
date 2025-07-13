@@ -1,14 +1,14 @@
-use once_cell::sync::Lazy;
 use ratatui::style::Style;
 use ratatui::text::{Line, Span};
+use std::sync::LazyLock;
 use syntect::easy::HighlightLines;
 use syntect::highlighting::{Theme, ThemeSet};
 use syntect::parsing::SyntaxSet;
 
-static SYNTAX_SET: Lazy<SyntaxSet> = Lazy::new(SyntaxSet::load_defaults_newlines);
-static THEME_SET: Lazy<ThemeSet> = Lazy::new(ThemeSet::load_defaults);
+static SYNTAX_SET: LazyLock<SyntaxSet> = LazyLock::new(SyntaxSet::load_defaults_newlines);
+static THEME_SET: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
 
-pub fn highlight_code(text: String) -> Line<'static> {
+pub fn highlight_code(text: &str) -> Line<'static> {
     let syntax = SYNTAX_SET
         .find_syntax_by_token("bash")
         .expect("could not find syntax");
@@ -19,10 +19,10 @@ pub fn highlight_code(text: String) -> Line<'static> {
 fn highlight_line(
     syntax_set: &SyntaxSet,
     highlighter: &mut HighlightLines,
-    line: String,
+    line: &str,
 ) -> Line<'static> {
     let highlighted_string = highlighter
-        .highlight_line(&line, syntax_set)
+        .highlight_line(line, syntax_set)
         .expect("Line could not be highlighted.");
     let styled_spans = highlighted_string
         .into_iter()

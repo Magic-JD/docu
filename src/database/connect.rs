@@ -4,13 +4,12 @@ use crate::database::{scriptlet, tool, tool_to_scriptlet};
 use crate::errors::error::DocuError;
 use crate::errors::error::DocuError::Access;
 use dirs::data_dir;
-use once_cell::sync::Lazy;
 use rusqlite::Connection;
 use std::fs::create_dir_all;
 use std::path::PathBuf;
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{LazyLock, Mutex, MutexGuard};
 
-static CONNECTION: Lazy<Mutex<Connection>> = Lazy::new(|| {
+static CONNECTION: LazyLock<Mutex<Connection>> = LazyLock::new(|| {
     let conn = Connection::open(database_path()).expect("Failed to open database");
     conn.execute_batch(
         "

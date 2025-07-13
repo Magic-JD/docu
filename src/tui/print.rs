@@ -41,7 +41,7 @@ pub fn show_all_scriptlets_tui(scriptlets: Vec<ScriptletData>) -> Result<(), Doc
 }
 
 fn clear_to_start(items: &[ListItem]) -> Result<(u16, u16), DocuError> {
-    let tui_height = items.len() as u16 + 2;
+    let tui_height = u16::try_from(items.len()).expect("Item length too big") + 2;
     let (_, mut start_row) = position()?;
     let (_, rows) = size()?;
     let avail = rows.saturating_sub(start_row);
@@ -68,7 +68,7 @@ fn convert_to_list_items(scriptlets: Vec<ScriptletData>) -> Vec<ListItem<'static
                     s.description,
                     Style::default().fg(Color::White),
                 )),
-                ListItem::new(highlight_code(s.command.clone())),
+                ListItem::new(highlight_code(&s.command.clone())),
                 ListItem::new(Span::raw("")),
             ]
             .into_iter()

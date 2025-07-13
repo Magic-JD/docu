@@ -9,13 +9,13 @@ pub fn show_all_scriptlets() {
 pub fn show_all_scriptlets_for_tool(tool_name: &str) {
     let scriplets = get_scriptlets_for_tool(tool_name).expect("can't get scriptlets");
     if scriplets.is_empty() {
-        println!("No scriptlets found for {}", tool_name);
+        println!("No scriptlets found for {tool_name}");
         return;
     }
     show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
 }
 
-pub fn show_searched_scriptlets(search: Vec<String>) {
+pub fn show_searched_scriptlets(search: &[String]) {
     let scriplets = search_scriptlets(&search.join(" ")).expect("can't get scriptlets");
     show_all_scriptlets_tui(scriplets).expect("Tui failed to display");
 }

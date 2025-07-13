@@ -20,14 +20,14 @@ fn main() {
                 println!("No scriptlet specified");
                 return;
             }
-            parse_scriptlet(args);
+            parse_scriptlet(&args);
         }
         Commands::Show { tool } => match tool {
             None => show_all_scriptlets(),
             Some(tool_name) => show_all_scriptlets_for_tool(&tool_name),
         },
         Commands::Search { search } => {
-            show_searched_scriptlets(search);
+            show_searched_scriptlets(&search);
         }
     }
 }

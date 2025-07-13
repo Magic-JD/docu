@@ -34,8 +34,8 @@ pub fn match_scriptlets(
 ) -> Result<Vec<ScriptletData>, DocuError> {
     let query = query
         .split_whitespace()
-        .map(|tok| tok.to_lowercase())
-        .map(|tok| format!("{}*", tok))
+        .map(str::to_lowercase)
+        .map(|tok| format!("{tok}*"))
         .collect::<Vec<_>>()
         .join(" OR ");
     let sql = "
