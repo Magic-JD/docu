@@ -76,6 +76,21 @@ docu show sed
 docu search "camel case"
 ```
 
+## Useful aliases
+
+If you add this to your aliases:
+
+```bash
+alias docl='docu add "$(fc -ln -1)"'
+```
+
+Then running docl will automatically run for the last command you entered.
+
+```bash
+cat demo.txt | sort | uniq -c | awk '$1 == 1 {print $2}'
+docl # This will then run docu add with the above command, allowing you to save it.
+```
+
 ## Contributing
 1. Fork the repository.
 2. Create a feature branch: git checkout -b feature-name.
