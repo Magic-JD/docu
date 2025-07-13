@@ -79,14 +79,16 @@ fn get_conn() -> Result<MutexGuard<'static, Connection>, DocuError> {
 
 pub fn add_scriptlet(
     title: &str,
-    tool: &str,
+    tools: Vec<&str>,
     command: &str,
     description: &str,
 ) -> Result<(), DocuError> {
     let conn = get_conn()?;
     let scriptlet_idx = scriptlet::insert_row(title, command, description, &conn)?;
-    let tool_idx = tool::add_or_get_tool(tool, &conn)?;
-    tool_to_scriptlet::link_scriptlet_to_tool(tool_idx, scriptlet_idx, &conn)?;
+    for tool in tools {
+        let tool_idx = tool::add_or_get_tool(tool, &conn)?;
+        tool_to_scriptlet::link_scriptlet_to_tool(tool_idx, scriptlet_idx, &conn)?;
+    }
     Ok(())
 }
 

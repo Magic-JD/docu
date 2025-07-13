@@ -23,6 +23,7 @@ thiserror = "2.0.12"
 crossterm = "0.29.0"
 ratatui = {version = "0.29.0", default-features = false, features = ["crossterm"]}
 syntect = "5.2.0"
+dialoguer = "0.11.0"
 
 # The profile that 'dist' will build with
 [profile.dist]
