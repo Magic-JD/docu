@@ -1,18 +1,18 @@
 use ratatui::style::Color;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize, Serializer};
 use std::fs;
 use std::path::PathBuf;
 use std::sync::LazyLock;
 
 pub static CONFIG: LazyLock<Config> = LazyLock::new(get_config);
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub struct Config {
     #[serde(default)]
     pub colors: ColorConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct ColorConfig {
     #[serde(default = "default_scriptlet_name_color")]
     pub scriptlet_name: ColorWrapper,
@@ -32,6 +32,39 @@ impl Default for ColorConfig {
 #[derive(Deserialize, Clone, Copy)]
 #[serde(try_from = "String")]
 pub struct ColorWrapper(pub Color);
+
+impl Serialize for ColorWrapper {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&color_to_string(self.0))
+    }
+}
+
+fn color_to_string(color: Color) -> String {
+    match color {
+        Color::Reset => "reset".to_string(),
+        Color::Black => "black".to_string(),
+        Color::Red => "red".to_string(),
+        Color::Green => "green".to_string(),
+        Color::Yellow => "yellow".to_string(),
+        Color::Blue => "blue".to_string(),
+        Color::Magenta => "magenta".to_string(),
+        Color::Cyan => "cyan".to_string(),
+        Color::Gray => "gray".to_string(),
+        Color::DarkGray => "darkgray".to_string(),
+        Color::LightRed => "lightred".to_string(),
+        Color::LightGreen => "lightgreen".to_string(),
+        Color::LightYellow => "lightyellow".to_string(),
+        Color::LightBlue => "lightblue".to_string(),
+        Color::LightMagenta => "lightmagenta".to_string(),
+        Color::LightCyan => "lightcyan".to_string(),
+        Color::White => "white".to_string(),
+        Color::Rgb(r, g, b) => format!("#{r:02x}{g:02x}{b:02x}"),
+        Color::Indexed(_) => panic!("unsupported color"),
+    }
+}
 
 impl From<ColorWrapper> for Color {
     fn from(value: ColorWrapper) -> Self {

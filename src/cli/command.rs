@@ -42,4 +42,7 @@ pub enum Commands {
         // Removes the given ids
         ids: Vec<i64>,
     },
+
+    /// Generate the default config file
+    GenerateConfig,
 }

@@ -1,4 +1,5 @@
 use crate::cli::command::{Cli, Commands};
+use crate::config::generate::generate_config_file;
 use crate::database::connect::remove_scriptlets;
 use crate::display::scriptlets::{
     show_all_scriptlets, show_all_scriptlets_for_tool, show_searched_scriptlets,
@@ -33,6 +34,9 @@ fn main() {
         }
         Commands::Remove { ids } => {
             remove_scriptlets(ids).expect("Failed to remove scriptlets");
+        }
+        Commands::GenerateConfig => {
+            generate_config_file();
         }
     }
 }

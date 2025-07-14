@@ -28,6 +28,19 @@ brew install magic-jd/tap/docu
 cargo install --git https://github.com/Magic-JD/docu.git
 ```
 
+## Table of Contents
+
+1. [Usage](#usage)
+    1. [Add a scriptlet](#add-a-scriptlet)
+    2. [Show all scriptlets](#show-all-scriptlets)
+    3. [Filter by command](#filter-by-command)
+    4. [Search by description](#search-by-description)
+2. [Useful aliases](#useful-aliases)
+3. [Configuration](#configuration)
+    1. [Colors](#colors)
+4. [Contributing](#contributing)
+5. [License](#license)
+
 ## Usage
 ### Add a scriptlet
 ```bash
@@ -37,6 +50,16 @@ docu add [OPTIONS] "SCRIPT"
 - You will be prompted to enter:
 - Name: A short identifier (e.g. camel case header)
 - Description: A sentence summarizing the purpose.
+
+#### Example
+
+```bash
+docu add "sed -i '1{s/ /_/g}' products.csv"
+```
+
+When prompted:
+- Name: camel case header
+- Description: Convert spaces in CSV header to underscores
 
 ### Show all scriptlets
 ```bash
@@ -48,7 +71,13 @@ Lists every stored scriptlet with its name and description.
 ```bash
 docu show $TOOL_NAME
 ```
-Displays only scriptlets containing the sed command.
+Displays only scriptlets containing the sed command. 
+
+#### Example
+Show all sed scriptlets
+```bash
+docu show sed
+```
 
 ### Search by description
 ```bash
@@ -56,14 +85,46 @@ docu search $SEARCH_TERM
 ```
 Returns an ordered list of scriptlets matching the search terms in their descriptions.
 
+#### Examples
+
+Find by keyword
+```bash
+docu search "camel case"
+```
+
+## Useful aliases
+
+If you add this to your aliases:
+
+```bash
+alias docl='docu add "$(fc -ln -1)"'
+```
+
+Then running docl will automatically run for the last command you entered.
+
+#### Example
+
+```bash
+cat demo.txt | sort | uniq -c | awk '$1 == 1 {print $2}'
+docl # This will then run docu add with the above command, allowing you to save it.
+```
+
 ## Configuration
-You can customize the colors used in the output by creating a configuration file in:
+
+You can generate a copy of the default config to see the configuration options using the command:
+
+```bash
+docu generate-config
+```
+
+This will print out the location of the created file, which will be:
 
 - Linux: ~/.config/is-fast/config.toml
 - macOS: ~/Library/Application Support/is-fast/config.toml
 - Windows: %APPDATA%\is-fast\config.toml
 
-Here is an example of the `config.toml` file:
+### Colors
+
 ```toml
 [colors]
 scriptlet_name = "yellow"
@@ -91,41 +152,6 @@ The available colors are:
 - white
 
 You can also use hex codes (e.g., `#RRGGBB`) or RGB values (e.g., `rgb(r, g, b)`).
-
-## Examples
-1. Store a CSV header camel-casing command
-```bash
-docu add "sed -i '1{s/ /_/g}' products.csv"
-```
-
-When prompted:
-- Name: camel case header
-- Description: Convert spaces in CSV header to underscores
-
-2. Show it in all sed scriptlets
-```bash
-docu show sed
-```
-
-3. Find by keyword
-```bash
-docu search "camel case"
-```
-
-## Useful aliases
-
-If you add this to your aliases:
-
-```bash
-alias docl='docu add "$(fc -ln -1)"'
-```
-
-Then running docl will automatically run for the last command you entered.
-
-```bash
-cat demo.txt | sort | uniq -c | awk '$1 == 1 {print $2}'
-docl # This will then run docu add with the above command, allowing you to save it.
-```
 
 ## Contributing
 1. Fork the repository.
