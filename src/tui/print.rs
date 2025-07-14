@@ -1,3 +1,4 @@
+use crate::config::configuration::CONFIG;
 use crate::database::data_types::ScriptletData;
 
 use crate::errors::error::DocuError;
@@ -8,7 +9,7 @@ use ratatui::{
     Terminal,
     backend::CrosstermBackend,
     layout::Rect,
-    style::{Color, Modifier, Style},
+    style::{Modifier, Style},
     text::Span,
     widgets::{Block, List, ListItem},
 };
@@ -61,12 +62,12 @@ fn convert_to_list_items(scriptlets: Vec<ScriptletData>) -> Vec<ListItem<'static
                 ListItem::new(Span::styled(
                     format!("{} ({})", s.name, s.id),
                     Style::default()
-                        .fg(Color::Yellow)
+                        .fg(CONFIG.colors.scriptlet_name.into())
                         .add_modifier(Modifier::BOLD),
                 )),
                 ListItem::new(Span::styled(
                     s.description,
-                    Style::default().fg(Color::White),
+                    Style::default().fg(CONFIG.colors.scriptlet_description.into()),
                 )),
                 ListItem::new(highlight_code(&s.command.clone())),
                 ListItem::new(Span::raw("")),

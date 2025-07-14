@@ -56,6 +56,42 @@ docu search $SEARCH_TERM
 ```
 Returns an ordered list of scriptlets matching the search terms in their descriptions.
 
+## Configuration
+You can customize the colors used in the output by creating a configuration file in:
+
+- Linux: ~/.config/is-fast/config.toml
+- macOS: ~/Library/Application Support/is-fast/config.toml
+- Windows: %APPDATA%\is-fast\config.toml
+
+Here is an example of the `config.toml` file:
+```toml
+[colors]
+scriptlet_name = "yellow"
+scriptlet_description = "white"
+```
+
+You can use color names, hex codes, or RGB values.
+
+The available colors are:
+- black
+- red
+- green
+- yellow
+- blue
+- magenta
+- cyan
+- gray
+- darkgray
+- lightred
+- lightgreen
+- lightyellow
+- lightblue
+- lightmagenta
+- lightcyan
+- white
+
+You can also use hex codes (e.g., `#RRGGBB`) or RGB values (e.g., `rgb(r, g, b)`).
+
 ## Examples
 1. Store a CSV header camel-casing command
 ```bash

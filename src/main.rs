@@ -7,6 +7,7 @@ use crate::parse::parser::parse_scriptlet;
 use clap::Parser;
 
 mod cli;
+mod config;
 mod database;
 mod display;
 mod errors;
