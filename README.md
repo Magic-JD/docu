@@ -37,7 +37,8 @@ cargo install --git https://github.com/Magic-JD/docu.git
     4. [Search by description](#search-by-description)
 2. [Useful aliases](#useful-aliases)
 3. [Configuration](#configuration)
-    1. [Colors](#colors)
+    1. [Themes](#themes)
+    2. [Colors](#colors)
 4. [Contributing](#contributing)
 5. [License](#license)
 
@@ -123,7 +124,20 @@ This will print out the location of the created file, which will be:
 - macOS: ~/Library/Application Support/is-fast/config.toml
 - Windows: %APPDATA%\is-fast\config.toml
 
+### Themes
+
+You can set a theme for the syntax highlighting of scriptlets.
+
+```toml
+[colors]
+theme = "default"
+```
+
+Available themes are: `default`, `ocean`, `forest`, `sunset`.
+
 ### Colors
+
+You can override the theme colors for specific elements.
 
 ```toml
 [colors]
