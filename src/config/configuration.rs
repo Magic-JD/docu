@@ -1,4 +1,3 @@
-use ratatui::style::Color;
 use serde::{Deserialize, Serialize, Serializer};
 use std::fs;
 use std::path::PathBuf;
@@ -15,9 +14,9 @@ pub struct Config {
 #[derive(Deserialize, Serialize)]
 pub struct ColorConfig {
     #[serde(default = "default_scriptlet_name_color")]
-    pub scriptlet_name: ColorWrapper,
+    pub scriptlet_name: Color,
     #[serde(default = "default_scriptlet_description_color")]
-    pub scriptlet_description: ColorWrapper,
+    pub scriptlet_description: Color,
 }
 
 impl Default for ColorConfig {
@@ -31,54 +30,22 @@ impl Default for ColorConfig {
 
 #[derive(Deserialize, Clone, Copy)]
 #[serde(try_from = "String")]
-pub struct ColorWrapper(pub Color);
+pub struct Color {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
 
-impl Serialize for ColorWrapper {
+impl Serialize for Color {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        serializer.serialize_str(&color_to_string(self.0))
+        serializer.serialize_str(&format!("#{:02x}{:02x}{:02x}", self.r, self.g, self.b))
     }
 }
 
-fn color_to_string(color: Color) -> String {
-    match color {
-        Color::Reset => "reset".to_string(),
-        Color::Black => "black".to_string(),
-        Color::Red => "red".to_string(),
-        Color::Green => "green".to_string(),
-        Color::Yellow => "yellow".to_string(),
-        Color::Blue => "blue".to_string(),
-        Color::Magenta => "magenta".to_string(),
-        Color::Cyan => "cyan".to_string(),
-        Color::Gray => "gray".to_string(),
-        Color::DarkGray => "darkgray".to_string(),
-        Color::LightRed => "lightred".to_string(),
-        Color::LightGreen => "lightgreen".to_string(),
-        Color::LightYellow => "lightyellow".to_string(),
-        Color::LightBlue => "lightblue".to_string(),
-        Color::LightMagenta => "lightmagenta".to_string(),
-        Color::LightCyan => "lightcyan".to_string(),
-        Color::White => "white".to_string(),
-        Color::Rgb(r, g, b) => format!("#{r:02x}{g:02x}{b:02x}"),
-        Color::Indexed(_) => panic!("unsupported color"),
-    }
-}
-
-impl From<ColorWrapper> for Color {
-    fn from(value: ColorWrapper) -> Self {
-        value.0
-    }
-}
-
-impl Default for ColorWrapper {
-    fn default() -> Self {
-        ColorWrapper(Color::Reset)
-    }
-}
-
-impl TryFrom<String> for ColorWrapper {
+impl TryFrom<String> for Color {
     type Error = String;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
@@ -91,7 +58,7 @@ impl TryFrom<String> for ColorWrapper {
                     .map_err(|e| format!("Invalid hex value for green: {e}"))?;
                 let b = u8::from_str_radix(&hex[4..6], 16)
                     .map_err(|e| format!("Invalid hex value for blue: {e}"))?;
-                return Ok(ColorWrapper(Color::Rgb(r, g, b)));
+                return Ok(Color { r, g, b });
             }
             return Err("Invalid hex color format. Use #RRGGBB".to_string());
         }
@@ -106,39 +73,59 @@ impl TryFrom<String> for ColorWrapper {
                 .map_err(|e| format!("Invalid RGB value: {e}"))?;
 
             if values.len() == 3 {
-                return Ok(ColorWrapper(Color::Rgb(values[0], values[1], values[2])));
+                return Ok(Color {
+                    r: values[0],
+                    g: values[1],
+                    b: values[2],
+                });
             }
             return Err("Invalid RGB color format. Use rgb(r, g, b)".to_string());
         }
 
         match value.to_lowercase().as_str() {
-            "black" => Ok(ColorWrapper(Color::Black)),
-            "red" => Ok(ColorWrapper(Color::Red)),
-            "green" => Ok(ColorWrapper(Color::Green)),
-            "yellow" => Ok(ColorWrapper(Color::Yellow)),
-            "blue" => Ok(ColorWrapper(Color::Blue)),
-            "magenta" => Ok(ColorWrapper(Color::Magenta)),
-            "cyan" => Ok(ColorWrapper(Color::Cyan)),
-            "gray" => Ok(ColorWrapper(Color::Gray)),
-            "darkgray" => Ok(ColorWrapper(Color::DarkGray)),
-            "lightred" => Ok(ColorWrapper(Color::LightRed)),
-            "lightgreen" => Ok(ColorWrapper(Color::LightGreen)),
-            "lightyellow" => Ok(ColorWrapper(Color::LightYellow)),
-            "lightblue" => Ok(ColorWrapper(Color::LightBlue)),
-            "lightmagenta" => Ok(ColorWrapper(Color::LightMagenta)),
-            "lightcyan" => Ok(ColorWrapper(Color::LightCyan)),
-            "white" => Ok(ColorWrapper(Color::White)),
+            "black" => Ok(Color { r: 0, g: 0, b: 0 }),
+            "red" => Ok(Color { r: 255, g: 0, b: 0 }),
+            "green" => Ok(Color { r: 0, g: 255, b: 0 }),
+            "yellow" => Ok(Color {
+                r: 255,
+                g: 255,
+                b: 0,
+            }),
+            "blue" => Ok(Color { r: 0, g: 0, b: 255 }),
+            "magenta" => Ok(Color {
+                r: 255,
+                g: 0,
+                b: 255,
+            }),
+            "cyan" => Ok(Color {
+                r: 0,
+                g: 255,
+                b: 255,
+            }),
+            "white" => Ok(Color {
+                r: 255,
+                g: 255,
+                b: 255,
+            }),
             _ => Err(format!("Invalid color: {value}")),
         }
     }
 }
 
-fn default_scriptlet_name_color() -> ColorWrapper {
-    ColorWrapper(Color::Yellow)
+fn default_scriptlet_name_color() -> Color {
+    Color {
+        r: 255,
+        g: 255,
+        b: 0,
+    }
 }
 
-fn default_scriptlet_description_color() -> ColorWrapper {
-    ColorWrapper(Color::White)
+fn default_scriptlet_description_color() -> Color {
+    Color {
+        r: 255,
+        g: 255,
+        b: 255,
+    }
 }
 
 fn get_config() -> Config {

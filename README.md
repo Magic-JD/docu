@@ -141,14 +141,6 @@ The available colors are:
 - blue
 - magenta
 - cyan
-- gray
-- darkgray
-- lightred
-- lightgreen
-- lightyellow
-- lightblue
-- lightmagenta
-- lightcyan
 - white
 
 You can also use hex codes (e.g., `#RRGGBB`) or RGB values (e.g., `rgb(r, g, b)`).
