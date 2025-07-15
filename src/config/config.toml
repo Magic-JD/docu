@@ -1,0 +1,18 @@
+# This is the default configuration file for docu.
+# You can override these settings by creating a config.toml file in your config directory.
+# The location of the config directory depends on your operating system.
+#
+# You can generate a config file by running `docu generate config`.
+
+[colors]
+# The theme to use for syntax highlighting.
+# Available themes are: default, ocean, forest, sunset
+theme = "default"
+
+# The color of the scriptlet name. Overrides the theme value.
+# This can be a hex color code (e.g., "#ff0000") or a color name (e.g., "red").
+# scriptlet_name = "#c8c800"
+
+# The color of the scriptlet description. Overrides the theme value.
+# This can be a hex color code (e.g., "#ff0000") or a color name (e.g., "red").
+# scriptlet_description = "#c8c8c8"

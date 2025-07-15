@@ -1,4 +1,4 @@
-use crate::config::configuration::CONFIG;
+use crate::config::load::CONFIG;
 use crate::database::data_types::ScriptletData;
 
 use crate::tui::syntax_highlight::highlight_code;
@@ -19,18 +19,18 @@ fn convert_to_list_items(scriptlets: Vec<ScriptletData>) -> Vec<String> {
             vec![
                 Style::new()
                     .fg(Color::Rgb(
-                        CONFIG.colors.scriptlet_name.r,
-                        CONFIG.colors.scriptlet_name.g,
-                        CONFIG.colors.scriptlet_name.b,
+                        CONFIG.colors.scriptlet_name.unwrap_or_default().r,
+                        CONFIG.colors.scriptlet_name.unwrap_or_default().g,
+                        CONFIG.colors.scriptlet_name.unwrap_or_default().b,
                     ))
                     .bold()
                     .paint(format!("{} ({})", s.name, s.id))
                     .to_string(),
                 Style::new()
                     .fg(Color::Rgb(
-                        CONFIG.colors.scriptlet_description.r,
-                        CONFIG.colors.scriptlet_description.g,
-                        CONFIG.colors.scriptlet_description.b,
+                        CONFIG.colors.scriptlet_description.unwrap_or_default().r,
+                        CONFIG.colors.scriptlet_description.unwrap_or_default().g,
+                        CONFIG.colors.scriptlet_description.unwrap_or_default().b,
                     ))
                     .paint(s.description)
                     .to_string(),

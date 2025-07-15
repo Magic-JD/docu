@@ -1,3 +1,5 @@
+use super::theme::themes;
+use crate::config::DEFAULT_CONFIG;
 use serde::{Deserialize, Serialize, Serializer};
 use std::fs;
 use std::path::PathBuf;
@@ -5,27 +7,17 @@ use std::sync::LazyLock;
 
 pub static CONFIG: LazyLock<Config> = LazyLock::new(get_config);
 
-#[derive(Deserialize, Serialize, Default)]
+#[derive(Deserialize, Serialize, Default, Clone)]
 pub struct Config {
     #[serde(default)]
     pub colors: ColorConfig,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Default, Clone)]
 pub struct ColorConfig {
-    #[serde(default = "default_scriptlet_name_color")]
-    pub scriptlet_name: Color,
-    #[serde(default = "default_scriptlet_description_color")]
-    pub scriptlet_description: Color,
-}
-
-impl Default for ColorConfig {
-    fn default() -> Self {
-        Self {
-            scriptlet_name: default_scriptlet_name_color(),
-            scriptlet_description: default_scriptlet_description_color(),
-        }
-    }
+    pub theme: Option<String>,
+    pub scriptlet_name: Option<Color>,
+    pub scriptlet_description: Option<Color>,
 }
 
 #[derive(Deserialize, Clone, Copy)]
@@ -34,6 +26,16 @@ pub struct Color {
     pub r: u8,
     pub g: u8,
     pub b: u8,
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Self {
+            r: 255,
+            g: 255,
+            b: 255,
+        }
+    }
 }
 
 impl Serialize for Color {
@@ -112,30 +114,45 @@ impl TryFrom<String> for Color {
     }
 }
 
-fn default_scriptlet_name_color() -> Color {
-    Color {
-        r: 255,
-        g: 255,
-        b: 0,
-    }
-}
-
-fn default_scriptlet_description_color() -> Color {
-    Color {
-        r: 255,
-        g: 255,
-        b: 255,
-    }
-}
-
 fn get_config() -> Config {
-    let config_path = dirs::config_dir().map(|p| p.join("docu").join("config.toml"));
-    load_config(config_path)
+    let mut config: Config = toml::from_str(DEFAULT_CONFIG).expect("Couldn't parse default config");
+
+    let user_config_path = dirs::config_dir().map(|p| p.join("docu").join("config.toml"));
+    let user_config: Option<Config> = load_config(user_config_path);
+
+    if let Some(user_config) = user_config {
+        let theme = user_config.colors.theme.or(config.colors.theme);
+        let scriptlet_name = user_config
+            .colors
+            .scriptlet_name
+            .or(config.colors.scriptlet_name);
+        let scriptlet_description = user_config
+            .colors
+            .scriptlet_description
+            .or(config.colors.scriptlet_description);
+
+        config.colors.theme = theme;
+        config.colors.scriptlet_name = scriptlet_name;
+        config.colors.scriptlet_description = scriptlet_description;
+    }
+
+    let theme_name = config.colors.theme.clone().unwrap_or("default".to_string());
+    let themes = themes();
+    let theme = themes
+        .get(&theme_name)
+        .unwrap_or_else(|| themes.get("default").unwrap());
+
+    config.colors.scriptlet_name = config.colors.scriptlet_name.or(Some(theme.scriptlet_name));
+    config.colors.scriptlet_description = config
+        .colors
+        .scriptlet_description
+        .or(Some(theme.scriptlet_description));
+
+    config
 }
 
-fn load_config(config_path: Option<PathBuf>) -> Config {
+fn load_config(config_path: Option<PathBuf>) -> Option<Config> {
     config_path
         .and_then(|p| fs::read_to_string(p).ok())
         .and_then(|c| toml::from_str(&c).ok())
-        .unwrap_or_default()
 }

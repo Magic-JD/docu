@@ -1,4 +1,4 @@
-use crate::config::configuration::Config;
+use crate::config::DEFAULT_CONFIG;
 use std::fs;
 use std::io::Write;
 
@@ -15,12 +15,9 @@ pub fn generate_config_file() {
         return;
     }
 
-    let default_config = Config::default();
-    let toml_config = toml::to_string(&default_config).unwrap();
-
     fs::File::create(&config_file_path)
         .expect("Error creating config file")
-        .write_all(toml_config.as_bytes())
+        .write_all(DEFAULT_CONFIG.as_bytes())
         .expect("Error writing default config file");
     println!(
         "Successfully generated config file at: {}",
