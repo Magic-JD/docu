@@ -1,17 +1,15 @@
 use crate::config::configuration::CONFIG;
 use crate::database::data_types::ScriptletData;
 
-use crate::errors::error::DocuError;
 use crate::tui::syntax_highlight::highlight_code;
 use nu_ansi_term::{Color, Style};
 
-pub fn show_all_scriptlets_tui(scriptlets: Vec<ScriptletData>) -> Result<(), DocuError> {
+pub fn show_all_scriptlets_tui(scriptlets: Vec<ScriptletData>) {
     let items = convert_to_list_items(scriptlets);
     println!();
     for item in items {
         println!("{item}");
     }
-    Ok(())
 }
 
 fn convert_to_list_items(scriptlets: Vec<ScriptletData>) -> Vec<String> {
